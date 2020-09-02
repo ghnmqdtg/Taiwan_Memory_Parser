@@ -1,4 +1,4 @@
-from PyQt5 import (QtWidgets)
+from PyQt5 import (QtWidgets, QtCore)
 import sys
 import GUI
 import time
@@ -8,19 +8,48 @@ import resource_parser
 import PDF_generator
 
 
-class main(QtWidgets.QMainWindow, GUI.Ui_MainWindow, ):
+class DownloadResource(QtCore.QThread):
+    def __init__(self, title, source_url, url_list):
+        QtCore.QThread.__init__(self)
+        self.url_list = url_list
+        self.source_url = source_url
+        self.title = title
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        # self.download_path = self.plainTextEdit_2.toPlainText()
+        self.download_path = ""
+        dir_status = resource_parser.creat_directory(self)
+        print(dir_status)
+        # self.statusBar().showMessage(dir_status, 5000)
+        threads = []
+
+        for i in range(len(self.url_list)):
+            threads.append(threading.Thread(
+                target=resource_parser.save_pictures, args=(self, i)))
+            threads[i].start()
+            time.sleep(0.5)
+            # self.statusBar().showMessage(f"{finish_time} 已下載第 {i + 1} 頁", 5000)
+
+        for i in range(len(self.url_list)):
+            threads[i].join()
+
+
+class GUI(QtWidgets.QMainWindow, GUI.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.pushButton.clicked.connect(self.resource_fetch)
         self.pushButton_2.clicked.connect(self.resource_download)
         self.pushButton_3.clicked.connect(self.output_PDF)
-        # self.url_list = []
-        # self.title = ""
-        # self.source_url = ""
-        self.url_list = ['/TM_DO/008/100634896/001028542/a0000001_watered_watered_72dpi.jpg', '/TM_DO/008/100634896/001028542/a0000002_watered_watered_72dpi.jpg', '/TM_DO/008/100634896/001028542/a0000003_watered_watered_72dpi.jpg']
-        self.title = "123"
-        self.source_url = "https://tm.ncl.edu.tw/article?u=008_001_0000350939&lang=chn"
+        self.url_list = []
+        self.title = ""
+        self.source_url = ""
+        # self.url_list = ['/TM_DO/008/100634896/001028542/a0000001_watered_watered_72dpi.jpg', '/TM_DO/008/100634896/001028542/a0000002_watered_watered_72dpi.jpg', '/TM_DO/008/100634896/001028542/a0000003_watered_watered_72dpi.jpg']
+        # self.title = "5456"
+        # self.source_url = "https://tm.ncl.edu.tw/article?u=008_001_0000350939&lang=chn"
 
     def resource_fetch(self):
         self.source_url = self.plainTextEdit.toPlainText()
@@ -37,21 +66,9 @@ class main(QtWidgets.QMainWindow, GUI.Ui_MainWindow, ):
             self.statusBar().showMessage("請填入書籍網址", 5000)
 
     def resource_download(self):
-        self.download_path = self.plainTextEdit_2.toPlainText()
-        dir_status = resource_parser.creat_directory(self)
-        self.statusBar().showMessage(dir_status, 5000)
-        threads = []
-
-        for i in range(len(self.url_list)):
-            threads.append(threading.Thread(
-                target=resource_parser.save_pictures(self, i)))
-            threads[i].start()
-            time.sleep(0.4)
-            finish_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            self.statusBar().showMessage(f"{finish_time} 已下載第 {i + 1} 頁", 5000)
-
-        for i in range(len(self.url_list)):
-            threads[i].join()
+        self.get_thread = DownloadResource(
+            self.title, self.source_url, self.url_list)
+        self.get_thread.start()
 
     def output_PDF(self):
         self.output_path = self.plainTextEdit_3.toPlainText()
@@ -61,6 +78,6 @@ class main(QtWidgets.QMainWindow, GUI.Ui_MainWindow, ):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = main()
+    window = GUI()
     window.show()
     sys.exit(app.exec_())

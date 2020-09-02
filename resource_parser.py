@@ -61,8 +61,11 @@ def creat_directory(self):
     else:
         path = "./img/"
     try:
-        os.mkdir(path + self.title)
-        return f"已建立名為 {self.title} 的資料夾"
+        if(self.title):
+            os.mkdir(path + self.title)
+            return f"已建立名為 {self.title} 的資料夾"
+        else:
+            return "尚未獲取書籍標題，請重新抓取來源"
     except OSError:
         return f"資料夾 {self.title} 已存在，內容將被覆寫"
 
