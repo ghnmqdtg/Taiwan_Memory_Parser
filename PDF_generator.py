@@ -22,6 +22,6 @@ def img_to_pdf_convert(self):
         pdf.add_page()
         pdf.image(img_path, 0, 0, 210, 297)
 
-    print("Picture loaded, Start Converting")
+    # print("Picture loaded, Start Converting")
     pdf.output(f"./pdf/{self.title}.pdf", "F")
-    print("PDF Generated Successfully")
+    return "PDF 轉換完成"

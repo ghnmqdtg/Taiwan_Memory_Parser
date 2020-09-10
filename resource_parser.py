@@ -86,11 +86,11 @@ def save_pictures(self, order):
     try:
         source_url = "https://tm.ncl.edu.tw/" + self.url_list[order]
         data = requests.get(source_url, headers=headers_2, proxies=proxies)
-        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if(data.status_code == requests.codes.ok):
             filename = str(order + 1).zfill(4)
             open((f"./img/{self.title}/{filename}.jpg"), "wb").write(data.content)
-            print(f"{current_time} Page {order + 1} is captured")
+            # return f"{current_time} Page {order + 1} is captured"
             data.close()
         else:
             print(f"Connection Error Occurred at page {order}, status: {data.status_code}")
