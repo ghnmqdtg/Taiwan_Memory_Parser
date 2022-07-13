@@ -28,9 +28,11 @@ random_proxies = [
     "54.178.4.138"
 ]
 
+
 def create_path(path):
     if not os.path.exists(path):
         os.makedirs(path)
+
 
 def get_resources(self, url):
     headers_1 = {
@@ -55,7 +57,8 @@ def get_resources(self, url):
 
         # store the title into the list
         # fetch the url of all pages
-        table = soup.find("table", {"class": "table table-hover table-responsive"})
+        table = soup.find(
+            "table", {"class": "table table-hover table-responsive"})
         for idx, ref in enumerate(table.find_all('a')):
             # print(str(idx), ref.get('href'))  # for debugging
             self.url_list.append(ref.get('href'))
@@ -79,13 +82,13 @@ def create_directory(self):
 
 def save_pictures(self, order):
     headers_2 = {
-            "Accept-Language": "en-GB,en;q=0.9,zh-TW;q=0.8,zh;q=0.7,en-US;q=0.6",
-            "Cache-Control": "max-age=0",
-            "Host": "tm.ncl.edu.tw",
-            "Referer": self.source_url,
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            "user-agent": random.choice(random_user)
+        "Accept-Language": "en-GB,en;q=0.9,zh-TW;q=0.8,zh;q=0.7,en-US;q=0.6",
+        "Cache-Control": "max-age=0",
+        "Host": "tm.ncl.edu.tw",
+        "Referer": self.source_url,
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "user-agent": random.choice(random_user)
     }
     proxies = {
         "http": random.choice(random_proxies)
@@ -93,13 +96,21 @@ def save_pictures(self, order):
     try:
         source_url = "https://tm.ncl.edu.tw/" + self.url_list[order]
         data = requests.get(source_url, headers=headers_2, proxies=proxies)
-        # current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d | %H:%M:%S")
         if(data.status_code == requests.codes.ok):
             filename = str(order + 1).zfill(4)
-            open((f"./img/{self.title}/{filename}.jpg"), "wb").write(data.content)
-            # return f"{current_time} Page {order + 1} is captured"
+
+            if os.path.exists(f"./img/{self.title}/{filename}.jpg"):
+                os.remove(f"./img/{self.title}/{filename}.jpg")
+
+            open((f"./img/{self.title}/{filename}.jpg"),
+                 "wb").write(data.content)
+            info = f"{current_time} | Page {order + 1} is captured"
+            self.trigger.emit(info)
             data.close()
         else:
-            print(f"Connection Error Occurred at page {order}, status: {data.status_code}")
+            print(
+                f"Connection Error Occurred at page {order}, status: {data.status_code}")
     except ConnectionResetError:
-        print(f"ConnectionResetError Occurred at page {order}, status: {data.status_code}")
+        print(
+            f"ConnectionResetError Occurred at page {order}, status: {data.status_code}")

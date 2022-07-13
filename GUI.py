@@ -47,6 +47,10 @@ class Ui_MainWindow(object):
                 font: bold;
                 font-size: 17px;
             }
+
+            QMessageBox {
+                background-color: #2a2a2a;
+            }
             """
         )
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -59,7 +63,8 @@ class Ui_MainWindow(object):
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(40, 110, 711, 51))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(
+            self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.pushButton = QtWidgets.QPushButton(self.horizontalLayoutWidget)
@@ -102,10 +107,12 @@ class Ui_MainWindow(object):
         self.gridLayout.setSpacing(3)
         self.gridLayout.setObjectName("gridLayout")
         self.label = QtWidgets.QLabel(self.gridLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
