@@ -28,6 +28,9 @@ random_proxies = [
     "54.178.4.138"
 ]
 
+def create_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 def get_resources(self, url):
     headers_1 = {
@@ -45,8 +48,11 @@ def get_resources(self, url):
     if response.status_code == requests.codes.ok:
         soup = BeautifulSoup(response.content, features='html.parser')
         # get title of the book
-        self.title = soup.select(
-            "#div-to-print > div:nth-child(2) > div.detail-td")[0].text
+        for tag in soup.find_all('div', class_='detail_list'):
+            if (tag.select(".detail-th")[0].text == "題名"):
+                self.title = tag.select(".detail-td")[0].text
+                break
+
         # store the title into the list
         # fetch the url of all pages
         table = soup.find("table", {"class": "table table-hover table-responsive"})
@@ -55,14 +61,15 @@ def get_resources(self, url):
             self.url_list.append(ref.get('href'))
 
 
-def creat_directory(self):
+def create_directory(self):
     if(self.download_path):
         path = self.download_path
     else:
         path = "./img/"
     try:
         if(self.title):
-            os.mkdir(path + self.title)
+            create_path(path)
+            create_path(path + self.title)
             return f"已建立名為 {self.title} 的資料夾"
         else:
             return "尚未獲取書籍標題，請重新抓取來源"

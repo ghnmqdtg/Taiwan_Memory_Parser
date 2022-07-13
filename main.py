@@ -23,7 +23,7 @@ class DownloadResource(QtCore.QThread):
 
     def run(self):
         self.download_path = ""
-        dir_status = resource_parser.creat_directory(self)
+        dir_status = resource_parser.create_directory(self)
         # self.trigger.emit(dir_status)
 
         threads = []
