@@ -72,6 +72,7 @@ class GUI(QtWidgets.QMainWindow, UI_design.Ui_MainWindow):
             # print(self.url_list)
             finish_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.statusBar().showMessage(f"{finish_time} 抓取完成", 5000)
+            self.source_url = ""
         else:
             QtWidgets.QMessageBox.information(
                 self, "尚未輸入書籍網址", "請填入書籍網址", QtWidgets.QMessageBox.Ok)
@@ -110,6 +111,7 @@ class GUI(QtWidgets.QMainWindow, UI_design.Ui_MainWindow):
 
     def done(self):
         QtWidgets.QMessageBox.information(self, "資料已下載", "圖片抓取完成！")
+        self.url_list = []
         self.downloading = False
 
 

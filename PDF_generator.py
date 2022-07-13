@@ -14,11 +14,7 @@ def img_to_pdf_convert(self):
             self, "Choose the target folder", "./")
         self.title = os.path.basename(path)
     else:
-        if self.output_path != '':
-            root = self.output_path
-        else:
-            root = "img"
-
+        root = "img"
         path = f"./{root}/{self.title}"
         if not os.path.exists(path):
             return
@@ -41,6 +37,8 @@ def img_to_pdf_convert(self):
     if os.path.exists(f"./pdf/{self.title}.pdf"):
         os.remove(f"./pdf/{self.title}.pdf")
 
+    # print(f"./pdf/{self.title}.pdf")
     # print("Picture loaded, Start Converting")
     pdf.output(f"./pdf/{self.title}.pdf", "F")
+    self.title = ""
     return "PDF 轉換完成"
